@@ -4,20 +4,52 @@
 <title>TestAgentsAssistMasMovil</title>
 </head>
 <body style="background-image: url('Swisscom.png');">
-<script type="text/javascript" charset="utf-8">
-  (function (g, e, n, es, ys) {
-    g['_genesysJs'] = e;
-    g[e] = g[e] || function () {
-      (g[e].q = g[e].q || []).push(arguments)
-    };
-    g[e].t = 1 * new Date();
-    g[e].c = es;
-    ys = document.createElement('script'); ys.async = 1; ys.src = n; ys.charset = 'utf-8'; document.head.appendChild(ys);
-  })(window, 'Genesys', 'https://apps.mypurecloud.de/genesys-bootstrap/genesys.min.js', {
-    environment: 'prod-euc1',
-    deploymentId: '4bbf04a7-77a9-4d03-8875-87cb24257451'
-  });
-</script>
+      <script>
+    CXData = {
+      department: "sales",
+      property_type: "apartment",
+      device: "mobile",
+      Language: "Dutch"
+    }
+  </script>
+
+
+  <script>
+      (function (g, e, n, es, ys) {
+        g['_genesysJs'] = e
+        g[e] = g[e] || function () {
+          (g[e].q = g[e].q || []).push(arguments)
+        }
+        g[e].t = 1 * new Date()
+        g[e].c = es
+        ys = document.createElement('script')
+        ys.async = 1
+        ys.src = n
+        ys.charset = 'utf-8'
+        document.head.appendChild(ys)
+        ys.onload = function () {
+          window.Genesys('subscribe', 'Messenger.ready', function () {
+            window.Genesys('subscribe', 'MessagingService.ready', function () {
+              CXAttributes(CXData)
+            })
+            window.Genesys('subscribe', 'MessagingService.conversationDisconnected', function () {
+              CXAttributes(CXData)
+            })
+            window.Genesys('subscribe', 'MessagingService.conversationCleared', function () {
+              CXAttributes(CXData)
+            })
+          })
+        }
+      })(window, 'Genesys', 'https://apps.mypurecloud.ie/genesys-bootstrap/genesys.min.js', {
+        environment: 'prod-euc1',
+        deploymentId: '4bbf04a7-77a9-4d03-8875-87cb24257451'
+      })
+    function CXAttributes(o) {
+      if (!(typeof o === 'object' && !Array.isArray(o) && (o === Object(o)))) return
+      console.log('Setting attributes: ', o)
+      window.Genesys('command', 'Database.set', { messaging: { customAttributes: o } })
+    } 
+  </script>
 <div id="genesys-support-center"></div>
 </body>
 <html>
